@@ -1,0 +1,205 @@
+import Button from '@material-ui/core/Button';
+import { createStyles, Theme } from '@material-ui/core/styles';
+import MuiTextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/styles';
+import { TextField, Validation } from '@pivot/use-form/dist/fields';
+import { FormHooks } from '@pivot/use-form/dist/useForm';
+import MuiTable from 'mui-table';
+import React, { useState } from 'react';
+import { hot } from 'react-hot-loader';
+import { useDispatch, useSelector } from 'react-redux';
+import LoadingButton from '../component/LoadingButton';
+import { StoreState } from '../redux/store';
+import { removeUser } from '../redux/users';
+
+export default hot(module)(function DataTable() {
+    const users = useSelector((state: StoreState) => state.users.list);
+    const dispatch = useDispatch();
+    const classes = useStyles();
+
+    const [filter, setFilter] = useState<string | undefined>(undefined);
+    const [orderBy, setOrderBy] = useState<string | undefined>(undefined);
+    const [orderDirection, setOrderDirection] = useState<'asc' | 'desc' | undefined>(undefined);
+
+    const filterType = (event: React.ChangeEvent<HTMLSelectElement>) => setFilter(event.target.value);
+
+    const orderByColumn = ({ column }) => {
+        const newOrderBy = column.orderBy || column.name;
+        setOrderDirection(orderBy === newOrderBy && orderDirection ? 'desc' : 'asc');
+        setOrderBy(newOrderBy);
+    };
+
+    const onRemoveUser = (id) => () => dispatch(removeUser(id));
+
+    const filteredData = users
+        .sort((a, b) => {
+            if (!orderBy) {
+                return 0;
+            }
+            if (a[orderBy] < b[orderBy]) {
+                return orderDirection === 'asc' ? -1 : 1;
+            } else if (a[orderBy] > b[orderBy]) {
+                return orderDirection === 'asc' ? 1 : -1;
+            }
+            if (a.company.name < b.company.name) {
+                return orderDirection === 'asc' ? -1 : 1;
+            } else if (a.company.name > b.company.name) {
+                return orderDirection === 'asc' ? 1 : -1;
+            }
+            if (a.address[orderBy] < b.address[orderBy]) {
+                return orderDirection === 'asc' ? -1 : 1;
+            } else if (a.address[orderBy] > b.address[orderBy]) {
+                return orderDirection === 'asc' ? 1 : -1;
+            } else {
+                return 0;
+            }
+        })
+        .filter(
+            (a) =>
+                !filter ||
+                a.email.toLowerCase().includes(filter.toLowerCase()) ||
+                a.name.toLowerCase().includes(filter.toLowerCase()) ||
+                a.address.city.toLowerCase().includes(filter.toLowerCase()) ||
+                a.phone.toLowerCase().includes(filter.toLowerCase()) ||
+                a.company.name.toLowerCase().includes(filter.toLowerCase()),
+        );
+
+    return (
+        <div className={classes.tableCells}>
+            <Typography variant="h1">Data Tables</Typography>
+            <br />
+            <FormHooks
+                defaultValues={{
+                    name: '',
+                    email: '',
+                    city: '',
+                    phone: '',
+                    company: '',
+                }}
+                validation={(values) =>
+                    Validation.run({
+                        name: Validation.required(values.name),
+                        email: Validation.required(values.email),
+                        city: Validation.required(values.city),
+                        phone: Validation.required(values.phone),
+                        company: Validation.required(values.company),
+                    })
+                }
+                handleSubmit={(values, { setSubmitting }) => {
+                    setSubmitting(true);
+                }}
+            >
+                {({ isSubmitting }) => (
+                    <div className={classes.addUser}>
+                        <Typography variant="h3">Add User</Typography>
+                        <br />
+                        <div className={classes.textfieldGrid}>
+                            <TextField name="name" label="Name" />
+                            <TextField name="email" label="Email" />
+                            <TextField name="city" label="City" />
+                            <TextField name="phone" label="Phone" />
+                            <TextField name="company" label="Company" />
+                        </div>
+                        <br />
+                        <LoadingButton isLoading={isSubmitting} variant="contained" type="submit">
+                            Add User
+                        </LoadingButton>
+                    </div>
+                )}
+            </FormHooks>
+            <div className={classes.filter}>
+                <Typography variant="h3">Filter</Typography>
+                <br />
+                <div className={classes.textfieldGrid}>
+                    <MuiTextField label="Email" onChange={filterType} />
+                    <MuiTextField label="Name" onChange={filterType} />
+                    <MuiTextField label="City" onChange={filterType} />
+                    <MuiTextField label="Phone" onChange={filterType} />
+                    <MuiTextField label="Company" onChange={filterType} />
+                </div>
+            </div>
+            <MuiTable
+                data={filteredData}
+                columns={[
+                    {
+                        name: 'name',
+                        header: 'Name',
+                    },
+                    {
+                        name: 'email',
+                        header: 'Email',
+                    },
+                    {
+                        name: 'city',
+                        cell: ({ address }) => address.city,
+                        header: 'City',
+                    },
+                    {
+                        name: 'phone',
+                        header: 'Phone',
+                    },
+                    {
+                        name: 'company',
+                        cell: ({ company }) => company.name,
+                        header: 'Company',
+                    },
+                    {
+                        name: '1',
+                        cell: ({ id }) => <Button onClick={onRemoveUser(id)}>Remove</Button>,
+                        header: ' ',
+                    },
+                ]}
+                headerProps={{
+                    className: classes.sticky,
+                }}
+                orderBy={orderBy}
+                orderDirection={orderDirection}
+                onHeaderClick={orderByColumn}
+                includeHeaders
+            />
+        </div>
+    );
+});
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        sticky: {
+            position: 'sticky',
+            top: 0,
+            background: '#eee',
+            zIndex: 1,
+            [theme.breakpoints.down('sm')]: {
+                top: 56,
+            },
+        },
+        tableCells: {
+            flex: '1 1 auto',
+            emptyCells: 'hide',
+            '& th': {
+                padding: '4px 24px',
+            },
+            '& td': {
+                padding: '4px 24px',
+                width: 'auto',
+            },
+            '& tr': {
+                '&:nth-child(even)': {
+                    backgroundColor: 'rgba(0,0,0,0.02)',
+                },
+            },
+        },
+        filter: {
+            backgroundColor: 'rgba(0,0,0,0.02)',
+            padding: 16,
+        },
+        addUser: {
+            backgroundColor: 'rgba(0,0,0,0.04)',
+            padding: 16,
+        },
+        textfieldGrid: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+        },
+    }),
+);
