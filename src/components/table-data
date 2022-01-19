@@ -1,0 +1,42 @@
+export declare type MuiTableProps<TData = any> = {
+    data: TData[] | null;
+    columns: ColumnDef<TData>[];
+    bodyProps?: TableBodyProps;
+    containerProps?: any;
+    includeHeaders?: boolean;
+    headerProps?: TableHeadProps;
+    rowProps?: ResolvePropType<TableRowProps, TData>;
+    headerRowProps?: ResolvePropType<TableRowProps, TData>;
+    headerCellProps?: ResolvePropType<TableCellProps, TData>;
+    bodyRowProps?: ResolvePropType<TableRowProps, TData>;
+    bodyCellProps?: ResolvePropType<TableCellProps, TData>;
+    cellProps?: ResolvePropType<TableCellProps, TData>;
+    onHeaderClick?: (obj: {
+        column: ColumnDef<TData>;
+    }) => void;
+    onCellClick?: (obj: {
+        rowData: TData;
+        column: ColumnDef<TData>;
+    }) => void;
+    orderBy?: string;
+    orderDirection?: 'asc' | 'desc';
+    pagination?: TablePaginationProps;
+    addPlaceholderRows?: boolean;
+    tableWrapperProps?: React.HTMLAttributes<HTMLDivElement>;
+    isCellHovered?: (obj: {
+        column: ColumnDef<TData>;
+        rowData: TData | null;
+        hoveredColumn: ColumnDef<TData> | null;
+        hoveredRowData: TData | null;
+    }) => boolean;
+    isCellSelected?: (obj: {
+        column: ColumnDef<TData>;
+        rowData: TData | null;
+    }) => boolean;
+    classes?: {
+        container?: string;
+        tableWrapper?: string;
+        cellHovered?: string;
+        cellSelected?: string;
+    };
+} & TableProps;
