@@ -40,3 +40,8 @@ export declare type MuiTableProps<TData = any> = {
         cellSelected?: string;
     };
 } & TableProps;
+declare function MuiTable<T = any>(props: MuiTableProps<T>): JSX.Element;
+export { getHeaders, getColumns };
+declare const _default: typeof MuiTable;
+export default _default;
+
