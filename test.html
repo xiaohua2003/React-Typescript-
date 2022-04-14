@@ -1,0 +1,59 @@
+	<div class="modal fade" id="notificationModal">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em class="ti ti-close"></em></a>
+							<div class="ath-container m-0">
+								<div class="ath-body bg-theme tc-light">
+									<h5 class="text-center title">Turn on Notifications<small class="tc-default"></small></h5>
+									<p>You wiil be notified of pits for sale in the system automatically</p>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="field-item animated" data-animate="fadeInUp" data-delay="0.4">
+												<label class="field-label ttu"> First Name</label>
+												<div class="field-wrap">
+													<input id="firstName" name="firstName" placeholder="First Name" type="text" class="input-bordered required">
+													<span id="firstNameError" class="invisible error"> First Name Required</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="field-item animated" data-animate="fadeInUp" data-delay="0.4">
+												<label class="field-label ttu">Last Name</label>
+												<div class="field-wrap">
+													<input id="lastName" name="lastName" placeholder="Last Name" type="text" class="input-bordered required">
+													<span id="lastNameError" class="invisible error"> Last Name Required</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-12">
+											<div class="field-item animated" data-animate="fadeInUp" data-delay="0.45">
+												<label class="field-label ttu">Phone</label>
+												<div class="field-wrap">
+													<input id="phone" name="phone" placeholder="Your phone number" type="phone" class="input-bordered required">
+													<span id="phoneError" class="invisible error">Valid Phone Required</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-12">
+											<div class="field-item animated" data-animate="fadeInUp" data-delay="0.45">
+													<label class="field-label ttu">Email</label>
+													<div class="field-wrap">
+														<input id="notificationEmail" name="notificationEmail" placeholder="Your email" type="email" class="input-bordered required email">
+														<span id="notificationEmailError" class="invisible error">Valid Email Required</span>
+													</div>
+											</div>
+										</div>
+									</div>
+									<input id="message" name="message" placeholder="Your email" type="text" value="<%= pit[0].title %> - #<%= pit[0].id_group %>" style="display: none">
+									<div class="text-center animated" data-animate="fadeInLeft" data-delay="0.45">
+										<button style="margin-bottom:'20px';" id="formButton" class="btn btn-md btn-thin btn-outline btn-primary btn-round no-change" onclick="sendMailPitRequest()">Turn on</button>
+									</div>	
+									<div>
+										<p style="font-size:1rem; margin-top:0.8rem;">We won't spam you and you will be able to turn off notifications at any time</p>
+									</div>				
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div> <!-- .modal @e -->
